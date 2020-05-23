@@ -36,8 +36,8 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
     'License :: OSI Approved :: MIT License',
-    'Topic :: Science/Research :: GIS',
-    'Operating System :: Microsoft :: Windows :: Windows 10'
+    'Topic :: Scientific/Engineering :: GIS',
+    'Topic :: Software Development :: Libraries :: Python Modules',
 ]
 
 if __name__ == "__main__":

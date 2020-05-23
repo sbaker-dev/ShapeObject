@@ -1,4 +1,7 @@
-# Don't track content of virtual enviroment and pycharm setup
+# Don't track content of virtual enviroment, build folders, or the pycharm setup
 venv/
 .idea/
 Tests/
+build/
+dist/
+Shape_object.egg-info/
