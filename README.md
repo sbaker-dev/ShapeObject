@@ -1,5 +1,5 @@
 # Shape_object
-<img src="images/logo_50%.png" alt="Logo">
+![logo]
 <h3 align="center">Shape_Object</h3>
 <p align="center">Create an objected from a shapefile with shapely compatible geometry</p>
 <p align="center">All of the source code can be found at the <a href="https://github.com/sbaker-dev/Shape_object">Shape_object github repository</a></p>
