@@ -1,3 +1,4 @@
 # Don't track content of virtual enviroment and pycharm setup
 venv/
 .idea/
+Tests/
