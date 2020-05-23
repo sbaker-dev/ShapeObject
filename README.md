@@ -25,7 +25,7 @@ This should make it quicker to start new projects involving shapefiles and reduc
 
 <!-- GETTING STARTED -->    
 ## Getting Started 
-Shape_object is avaliable via Pypi so you can pip install by the following command
+Shape_object is available via Pypi so you can pip install by the following command
 
 ```shell script
 python -m pip install Shape_object
@@ -53,7 +53,7 @@ easy to use shapely inbuilt functions as the IntelliSence from Shapely exists fo
 
 All the features are held within a ShapeObject. It computes all the underlying geometry for a given shapefile once 
 called so it is best to do this at the top of your file and set it equal to variable that then holds the underling 
-ShapeObject class. Below is a simple example that prints the record held in the shapefile and the area of each polygon#
+ShapeObject class. Below is a simple example that prints the record held in the shapefile and the area of each polygon.
 
 
 ```python
