@@ -79,7 +79,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[logo]: images/logo2.png
+[logo]: images/logo3.png
 [shapely_sense]: images/intelisense.png
 
 
