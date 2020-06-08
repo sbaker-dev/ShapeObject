@@ -1,8 +1,8 @@
 ![logo]
-# Shape_object
+# shapeObject
 Create an objected from a shapefile with shapely compatible geometry
 
-All of the source code can be found at the [Shape_object git repository](https://github.com/sbaker-dev/Shape_object)
+All of the source code can be found at the [shapeObject git repository](https://github.com/sbaker-dev/Shape_object)
 
 
 <!--Table OF CONTENTS -->
@@ -28,7 +28,7 @@ This should make it quicker to start new projects involving shapefiles and reduc
 Shape_object is available via Pypi so you can pip install by the following command
 
 ```shell script
-python -m pip install Shape_object
+python -m pip install shapeObject
 ```
 
 <!-- USAGE -->
@@ -38,7 +38,7 @@ that Esri .shp files tend to have lots of supporting files and these should be i
 within the directory of the .shp file for these supporting files.
 
 ```python
-from Shape_object.core import ShapeObject
+from shapeObject.core import ShapeObject
 
 shape_object = ShapeObject(r"/path/to/your/shapefile/file.shp")
 
@@ -57,7 +57,7 @@ ShapeObject class. Below is a simple example that prints the record held in the 
 
 
 ```python
-from Shape_object.core import ShapeObject
+from shapeObject.core import ShapeObject
 
 shape_object = ShapeObject(r"/path/to/your/shapefile/file.shp")
 

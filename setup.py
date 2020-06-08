@@ -10,15 +10,15 @@ Shapefile formatted files. This Project uses Pyshp to import these files, but th
 
 This should make it quicker to start new projects involving shapefiles and reduce duplicating code.
 
-All of the source code can be found at the [Shape_object github](https://github.com/sbaker-dev/Shape_object)
+All of the source code can be found at the [shapeObject github](https://github.com/sbaker-dev/Shape_object)
 """
 LONG_DESCRIPTION_CONTENT_TYPE = "text/markdown"
 
-DISTNAME = 'Shape_object'
+DISTNAME = 'shapeObject'
 MAINTAINER = 'Samuel Baker'
 MAINTAINER_EMAIL = 'samuelbaker.researcher@gmail.com'
 LICENSE = 'MIT'
-DOWNLOAD_URL = "https://github.com/sbaker-dev/Shape_object"
+DOWNLOAD_URL = "https://github.com/sbaker-dev/ShapeObject"
 VERSION = "0.01.0"
 PYTHON_REQUIRES = ">=3.6"
 
@@ -28,7 +28,7 @@ INSTALL_REQUIRES = [
 ]
 
 PACKAGES = [
-    "Shape_object",
+    "shapeObject",
 ]
 
 CLASSIFIERS = [
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     import sys
 
     if sys.version_info[:2] < (3, 7):
-        raise RuntimeError("Shape_object requires python >= 3.7.")
+        raise RuntimeError("shapeObject requires python >= 3.7.")
 
     setup(
         name=DISTNAME,

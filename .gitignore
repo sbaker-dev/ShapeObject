@@ -4,4 +4,4 @@ venv/
 Tests/
 build/
 dist/
-Shape_object.egg-info/
+shapeObject.egg-info/
