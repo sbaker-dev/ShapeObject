@@ -1,4 +1,4 @@
-from shapely.geometry import Polygon, MultiPolygon
+from shapely.geometry import Polygon, MultiPolygon, Point
 import shapefile as shp
 from distutils.util import strtobool
 
@@ -23,6 +23,7 @@ class ShapeObject:
         self.file_name = load_path.replace("\\", "/").split("/")[-1]
         self.field_names = self._extract_field(0)
         self.field_types = self._set_field_types()
+
         self.polygon_geometry, self.polygon_records = self._extract_geometry()
 
     def _extract_field(self, index):
@@ -118,7 +119,13 @@ class ShapeObject:
         """
 
         polygonal_geometry = []
+        edge_geometry = []
+        point_geometry = []
+
         polygonal_records = []
+        edge_records = []
+        point_records = []
+
         for i, record in enumerate(self._records):
             geometry_type, geometry_point_set = self._extract_geometry_data(i)
 
@@ -130,6 +137,11 @@ class ShapeObject:
                 polygonal_geometry.append(MultiPolygon([self._set_shapely_polygon(poly_point_set, i)
                                                         for poly_point_set in geometry_point_set]))
                 polygonal_records.append(record)
+
+            elif geometry_type == "Point":
+                point_geometry.append(Point(geometry_point_set))
+                point_records.append(record)
+
             else:
                 print(f"Sorry: {geometry_type} not currently supported")
 
