@@ -1,4 +1,4 @@
-from shapely.geometry import Polygon, MultiPolygon, Point
+from shapely.geometry import Polygon, MultiPolygon, Point, LineString
 import shapefile as shp
 from distutils.util import strtobool
 
@@ -145,11 +145,14 @@ class ShapeObject:
                 point_geometry.append(Point(geometry_point_set))
                 point_records.append(record)
 
+            elif geometry_type == "LineString":
+                edge_geometry.append(LineString(geometry_point_set))
+                edge_records.append(record)
+
             elif geometry_type == "Null":
                 print(f"Null found for {i}th element, which was skipped")
 
             else:
-
                 print(f"Sorry: {geometry_type} not currently supported")
 
         return polygonal_geometry, polygonal_records
