@@ -90,8 +90,11 @@ class ShapeObject:
             coordinates
         :rtype: tuple[str, list]
         """
-        json_info = self._shapefile.shape(index).__geo_interface__
-        return json_info["type"], json_info["coordinates"]
+        if self._shapefile.shape(index).shapeTypeName != "NULL":
+            json_info = self._shapefile.shape(index).__geo_interface__
+            return json_info["type"], json_info["coordinates"]
+        else:
+            return "Null", []
 
     def _extract_geometry(self):
         """
@@ -142,7 +145,11 @@ class ShapeObject:
                 point_geometry.append(Point(geometry_point_set))
                 point_records.append(record)
 
+            elif geometry_type == "Null":
+                print(f"Null found for {i}th element, which was skipped")
+
             else:
+
                 print(f"Sorry: {geometry_type} not currently supported")
 
         return polygonal_geometry, polygonal_records
