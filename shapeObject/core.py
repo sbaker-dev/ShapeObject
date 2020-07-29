@@ -24,7 +24,8 @@ class ShapeObject:
         self.field_names = self._extract_field(0)
         self.field_types = self._set_field_types()
 
-        self.polygon_geometry, self.polygon_records = self._extract_geometry()
+        self.polygon_geometry, self.polygon_records, self.edge_geometry, self.edge_records, self.point_geometry, \
+            self.point_records = self._extract_geometry()
 
     def _extract_field(self, index):
         """
@@ -116,7 +117,7 @@ class ShapeObject:
 
         Warning
         -----
-        Currently only supports polygonal geometry, will support all three types soon
+        Currently does not have support for multi-linestrings, or linear rings.
 
         :return: A list of each homogeneous geometry type
         """
@@ -155,7 +156,7 @@ class ShapeObject:
             else:
                 print(f"Sorry: {geometry_type} not currently supported")
 
-        return polygonal_geometry, polygonal_records
+        return polygonal_geometry, polygonal_records, edge_geometry, edge_records, point_geometry, point_records
 
     def _set_shapely_polygon(self, polygon_point_set, index):
         """
