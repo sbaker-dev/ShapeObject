@@ -43,10 +43,8 @@ from shapeObject.core import ShapeObject
 shape_object = ShapeObject(r"/path/to/your/shapefile/file.shp")
 
 ```
-Now you have an objected that has loaded your shapefile which is filled with shapely objects. This means that it is very
-easy to use shapely inbuilt functions as the IntelliSence from Shapely exists for all the objects within shape_obj.
-
-![shapely_sense]
+Now you have an objected that has loaded your shapefile which is filled with shapely objects! Each object type has its 
+own geometry and record type so you can iterate through specific types in the case of multi-typed shapefiles.
 
 <!-- BASIC EXAMPLE -->
 ## Basic Example
