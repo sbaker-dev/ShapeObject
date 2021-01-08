@@ -1,6 +1,5 @@
-import shapefile as shp
 from shapely.geometry import mapping
-import sys
+import shapefile as shp
 
 
 def set_geometry(geometry):
@@ -17,7 +16,7 @@ def set_geometry(geometry):
     elif mapped["type"] == "MultiPolygon":
         return [part for polygon in mapped["coordinates"] for part in polygon]
     else:
-        sys.exit(f"Sorry: {mapped['type']} not currently writeable")
+        raise NotImplementedError(f"Sorry: {mapped['type']} not currently writeable")
 
 
 def write_shape_file(write_directory, file_name, headers, write_geometry, write_records):

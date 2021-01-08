@@ -1,6 +1,7 @@
 from shapely.geometry import Polygon, MultiPolygon, Point, LineString
-import shapefile as shp
 from distutils.util import strtobool
+from pathlib import Path
+import shapefile as shp
 
 
 class ShapeObject:
@@ -20,7 +21,7 @@ class ShapeObject:
         self._shapefile = shp.Reader(load_path)
         self._records = self._extract_records()
 
-        self.file_name = load_path.replace("\\", "/").split("/")[-1]
+        self.file_name = Path(load_path).name
         self.field_names = self._extract_field(0)
         self.field_types = self._set_field_types()
 
