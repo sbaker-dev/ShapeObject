@@ -29,6 +29,6 @@ shapefiles that have been provided for you, or your own if you have them.
 
 [pyshp]: https://pypi.org/project/pyshp/1.2.10/
 [shapely]: https://pypi.org/project/Shapely/
-[logo]: images/logo3.png
+[logo]: images/logo.png
 
 
