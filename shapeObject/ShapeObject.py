@@ -17,16 +17,26 @@ class ShapeObject:
         :param load_path: The full path to the .shp file you want to load
         :type load_path: str
         """
+        self.file_name = Path(load_path).name
 
+        # Use pyshp to create a Reader for the shapefile, and use it to extract the raw records
         self._shapefile = shp.Reader(load_path)
         self._records = self._extract_records()
 
-        self.file_name = Path(load_path).name
+        # Set the fields of the shapefile
         self.field_names = self._extract_field(0)
         self.field_types = self._set_field_types()
 
-        self.polygon_geometry, self.polygon_records, self.edge_geometry, self.edge_records, self.point_geometry, \
-            self.point_records = self._extract_geometry()
+        # Extract the raw geometry to be accessed via respective properties
+        self._geometry = self._extract_geometry()
+
+        # Set the type for the user to look at and for internal usage
+        self._type_dict = {1: "points", 3: "edges", 5: "polygons"}
+        self.shapefile_type = self._type_dict[self._shapefile.shapeType]
+
+    def __repr__(self):
+        """The current file contains (Number of elements) of type self.shapefile_type"""
+        return f"{self.file_name} contains {len(getattr(self, self.shapefile_type))} {self.shapefile_type}"
 
     def _extract_field(self, index):
         """
@@ -106,15 +116,8 @@ class ShapeObject:
         --------------------
         Geometry can be grouped into three core collection types: Points, Lines and Polygons. Some of these types have
         multiple sub types, for example a polygon may be a single polygon or a multipolygon. This extracts the geometry
-        and returns lists of each homogeneous type. In the case of multiple types in a given shapefile, if records where
-        not indexed by type, then the length of records would not match the type leading to problems.
-
-        Note
-        ------
-        I am aware that shapely has homogeneous groupings, these features are necessary when loading in geometry via a
-        shapefile. However if a Shapely Multipolygon is used on all the geometry that is constructed i lose the
-        IntelliSense for the objects which is undesirable but probably an error on my part. As such these are just
-        lists of Shapely geometry types rather than a Shapely Geometry collection OF Shapely geometry types
+        and returns a dict containing each homogeneous type. In the case of multiple types in a given shapefile, if
+        records where not indexed by type, then the length of records would not match the type leading to problems.
 
         Warning
         -----
@@ -122,34 +125,29 @@ class ShapeObject:
 
         :return: A list of each homogeneous geometry type
         """
-
-        polygonal_geometry = []
-        edge_geometry = []
-        point_geometry = []
-
-        polygonal_records = []
-        edge_records = []
-        point_records = []
+        geometry = {"Polygon": {"Geometry": [], "Records": []},
+                    "Edge": {"Geometry": [], "Records": []},
+                    "Point": {"Geometry": [], "Records": []}}
 
         for i, record in enumerate(self._records):
             geometry_type, geometry_point_set = self._extract_geometry_data(i)
 
             if geometry_type == "Polygon":
-                polygonal_geometry.append(self._set_shapely_polygon(geometry_point_set, i))
-                polygonal_records.append(record)
+                geometry["Polygon"]["Geometry"].append(self._set_shapely_polygon(geometry_point_set, i))
+                geometry["Polygon"]["Records"].append(record)
 
             elif geometry_type == "MultiPolygon":
-                polygonal_geometry.append(MultiPolygon([self._set_shapely_polygon(poly_point_set, i)
-                                                        for poly_point_set in geometry_point_set]))
-                polygonal_records.append(record)
+                geometry["Polygon"]["Geometry"].append(MultiPolygon([self._set_shapely_polygon(poly_point_set, i)
+                                                                     for poly_point_set in geometry_point_set]))
+                geometry["Polygon"]["Records"].append(record)
 
             elif geometry_type == "Point":
-                point_geometry.append(Point(geometry_point_set))
-                point_records.append(record)
+                geometry["Point"]["Geometry"].append(Point(geometry_point_set))
+                geometry["Point"]["Records"].append(record)
 
             elif geometry_type == "LineString":
-                edge_geometry.append(LineString(geometry_point_set))
-                edge_records.append(record)
+                geometry["Edge"]["Geometry"].append(LineString(geometry_point_set))
+                geometry["Edge"]["Records"].append(record)
 
             elif geometry_type == "Null":
                 print(f"Null found for {i}th element, which was skipped")
@@ -157,7 +155,7 @@ class ShapeObject:
             else:
                 print(f"Sorry: {geometry_type} not currently supported")
 
-        return polygonal_geometry, polygonal_records, edge_geometry, edge_records, point_geometry, point_records
+        return geometry
 
     def _set_shapely_polygon(self, polygon_point_set, index):
         """
@@ -200,3 +198,55 @@ class ShapeObject:
         else:
             print(f"Invalid Polygon found for {self._records[index]}: Buffering")
             return polygon.buffer(0)
+
+    @property
+    def polygons(self):
+        """
+        Points from the extracted geometry if correct type, else TypeError
+
+        :return: [Polygons1 ... PolygonN] Polygons
+        :rtype: list[Polygon]
+        """
+        if self.shapefile_type == "polygons":
+            return [poly for poly in self._geometry["Polygon"]["Geometry"]]
+        else:
+            return TypeError(f"Polygons called but shapefile type is {self.shapefile_type}")
+
+    @property
+    def edges(self):
+        """
+        Edges from the extracted geometry if correct type, else TypeError
+
+        :return: [Edge1 ... EdgeN] Edges
+        :rtype: list[LineString]
+        """
+        if self.shapefile_type == "edges":
+            return [edge for edge in self._geometry["Edge"]["Geometry"]]
+        else:
+            raise TypeError(f"Edges called but shapefile type is {self.shapefile_type}")
+
+    @property
+    def points(self):
+        """
+        Points from the extracted geometry if correct type, else TypeError
+
+        :return: [Point1 ... PointN] Points
+        :rtype: list[Point]
+
+        """
+        if self.shapefile_type == "points":
+            return [point for point in self._geometry["Point"]["Geometry"]]
+        else:
+            raise TypeError(f"Points called but shapefile type is {self.shapefile_type}")
+
+    @property
+    def records(self):
+        """Return the relevant records to the shape type"""
+        if self.shapefile_type == "polygons":
+            return [rec for rec in self._geometry["Polygon"]["Records"]]
+        elif self.shapefile_type == "edges":
+            return [rec for rec in self._geometry["Edge"]["Records"]]
+        elif self.shapefile_type == "points":
+            return [rec for rec in self._geometry["Point"]["Records"]]
+        else:
+            raise ValueError(f"Expected values of shapeType are 1, 3, and 5 yet found {self.shapefile_type}")
