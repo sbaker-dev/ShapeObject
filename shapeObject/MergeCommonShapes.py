@@ -1,5 +1,6 @@
 from .ShapeObject import ShapeObject
 from .write_shapefile import write_shape_file
+from .supports import multi_to_poly
 from shapely.geometry import Polygon, MultiPolygon
 
 from typing import Union, List, Tuple
@@ -34,9 +35,17 @@ class MergeCommonShapes:
         """
         matched = self._isolate_matching(gid)
         if len(matched) > 1:
-            return MultiPolygon([shp for shp, _ in matched]), self._set_headers(matched[0][1])
+            return self._isolate_polygons(matched), self._set_headers(matched[0][1])
         else:
             return matched[0][0], self._set_headers(matched[0][1])
+
+    @staticmethod
+    def _isolate_polygons(matched):
+        """
+        If multiple Polygons exist, merge them into a MultiPolygon. If the nested polygons are themselves multipolygons,
+        then split those polygons first
+        """
+        return MultiPolygon([shp for polys in [multi_to_poly(shp) for shp, _ in matched] for shp in polys])
 
     def _isolate_matching(self, gid: Union[str, int]):
         """Isolate all the shapes that match the current unique GID"""
@@ -45,3 +54,4 @@ class MergeCommonShapes:
     def _set_headers(self, headers: List[str]) -> List[str]:
         """Isolate each column i in the order of header_indexes"""
         return [headers[i] for i in self.header_indexes]
+
