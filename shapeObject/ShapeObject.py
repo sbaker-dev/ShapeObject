@@ -1,5 +1,6 @@
 from shapely.geometry import Polygon, MultiPolygon, Point, LineString
 from distutils.util import strtobool
+from typing import Union
 from pathlib import Path
 import shapefile as shp
 
@@ -9,18 +10,19 @@ class ShapeObject:
     Create an objected from a shapefile with shapely compatible geometry
     """
 
-    def __init__(self, load_path):
+    def __init__(self, load_path: Union[Path, str], encoding: str = 'utf-8', encoding_errors: str = 'strict'):
         """
         Creates an object from loading in a shapefile via pyshp. This class then converts the geometry to be shapely
         compatible and loads other data like records/parameters into there own class object holders.
 
-        :param load_path: The full path to the .shp file you want to load
-        :type load_path: str
+        Takes a path to a file, an optional parameters to set the coding and how to handle errors
+
+
         """
         self.file_name = Path(load_path).name
 
         # Use pyshp to create a Reader for the shapefile, and use it to extract the raw records
-        self._shapefile = shp.Reader(load_path)
+        self._shapefile = shp.Reader(load_path, encoding=encoding, encodingErrors=encoding_errors)
         self._records = self._extract_records()
 
         # Set the fields of the shapefile
@@ -31,14 +33,14 @@ class ShapeObject:
         self._geometry = self._extract_geometry()
 
         # Set the type for the user to look at and for internal usage
-        self._type_dict = {1: "points", 3: "edges", 5: "polygons"}
+        self._type_dict = {1: "points", 3: "edges", 5: "polygons", 15: 'polygons'}
         self.shapefile_type = self._type_dict[self._shapefile.shapeType]
 
     def __repr__(self):
         """The current file contains (Number of elements) of type self.shapefile_type"""
         return f"{self.file_name} contains {len(getattr(self, self.shapefile_type))} {self.shapefile_type}"
 
-    def _extract_field(self, index):
+    def _extract_field(self, index: int):
         """
         Takes a index to parse out information from the list of record column information
 
@@ -76,7 +78,7 @@ class ShapeObject:
         return [type_list[field_type] for field_type in self._extract_field(1)]
 
     @staticmethod
-    def _string_to_bool(string_representation_of_bool):
+    def _string_to_bool(string_representation_of_bool: str):
         """
         Convert a string of False or True to a bool representation
         """
@@ -91,7 +93,7 @@ class ShapeObject:
         """
         return [record for record in self._shapefile.records()]
 
-    def _extract_geometry_data(self, index):
+    def _extract_geometry_data(self, index: int):
         """
         Returns the type of the current geometry for the current indexed piece of geometry in the shapefile
 
